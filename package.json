@@ -1,0 +1,25 @@
+{
+  "name": "Tacts",
+  "version": "1",
+  "description": "Attendence Taking App",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "export $(cat .env | xargs) && nodemon index.js",
+    "set_env": "export $(cat .env | xargs)",
+    "switch_to_dev": "export $(cat .env | xargs) && wget --spider https://api.telegram.org/bot$TOKEN/setWebhook?url= --delete-after && node index.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt-nodejs": "^0.0.3",
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.16.0",
+    "crypto": "^0.0.3",
+    "express": "^4.14.0",
+    "mongodb": "^2.2.21",
+    "mongoose": "^4.7.8",
+    "nodemon": "^1.11.0",
+    "telegraf": "^3.6.4",
+    "telegraf-flow": "^8.1.2"
+  }
+}
