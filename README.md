@@ -1,6 +1,6 @@
-# t(ACTS)bot
+# SevenThreeBot
 
-This is a telegram bot to help take attendance.
+🦁 SevenThree Bot is based off the verse in Proverbs 7:3
 
 ## Getting Started
 
@@ -10,24 +10,43 @@ First, download and unzip the project into any directory. You can even host the 
 
 To use t(ACTS)bot, you will need to install, NodeJS(server), MongoDB(database) and also Yarn(package manager).
 
-Install NodeJS on OSX:
+Install NodeJS on OSX (Terminal):
 
 ```
 brew install node
 ```
 
-Install MongoDB on OSX:
+Install MongoDB on OSX (Terminal):
 
 ```
 brew install mongodb
 ```
 
-Install Yarn on OSX:
+Install Yarn on OSX (Terminal):
 
 ```
 brew install yarn
 ```
 
+### Initial Setup
+
+Running the bot:
+
+First start MongoDB (Terminal):
+
+```
+mongod
+```
+
+Next, navigate into the bot's project directory before starting the bot app (Terminal):
+
+```
+cd SevenThreeBot
+yarn start
+```
+
+
+<!--
 
 ### Initial Setup
 
@@ -99,4 +118,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 * Hat tip to anyone who's code was used
 * Inspiration
-* etc
+* etc -->
