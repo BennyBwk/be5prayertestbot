@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 //Lets connect to our database using the DB server URL.
-mongoose.connect(process.env.DB_PATH);
+mongoose.connect("mongodb://localhost:27017/seventhreebot");
 
 module.exports = {
     mongoose:mongoose
