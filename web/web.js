@@ -15,7 +15,7 @@ app.get('/test', function (req, res) {
 });
 
 app.get('/info', function (req, res) {
-  res.send("<b>This is Seven One Bot!</b>");
+  res.send("<b>This is Seven One Bot!</b><p>Hello my name is Bot</p>");
 });
 
 // var server = app.listen(process.env.PORT, "0.0.0.0", function () {

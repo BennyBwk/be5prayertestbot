@@ -25,6 +25,7 @@ bot.command('special', (ctx) => {
 
 //----------------------------------REGISTER--------------------------------
 bot.command('register', (ctx) => {
+    console.log(ctx.update.message);
     // Get the user's details (object)
     let userObject = ctx.update.message.from;
     //Add the user's details to the temp admin waiting list
@@ -82,7 +83,7 @@ bot.command('admins', (ctx) => {
                 counter = counter + 1;
                 message = message + counter + ". " + "@" +  user.username + "\n" ;
                 message = message + "Name: <b>" + user.first_name + " " + (user.last_name || "") + "</b>\n" ;
-                message = message + "CG: <b>" + user.cg + "</b>\n" ;
+                message = message + "CG: <b>" + user.cg + "</b>\n\n" ;
             });
             return ctx.replyWithHTML( message );
         })
