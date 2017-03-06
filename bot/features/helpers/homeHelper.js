@@ -36,9 +36,7 @@ const superWizard = new WizardScene('super-wizard',
         ctx.reply('For '+ answeredWords[0] +' so loved ' + answeredWords[1] + ' that He gave His only ______, that whoever believe in Him should not perish but have everlasting life.\n\n What is the third word?')
         ctx.flow.wizard.next()
     },
-    // (ctx) => {
-    //
-    // },
+
     (ctx) => {
 
         repliedWord = ctx.update.message.text;
