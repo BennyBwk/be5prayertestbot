@@ -65,6 +65,61 @@ flow.register(superWizard);
 
 module.exports = {
 
-    flow: flow
+    flow: flow,
+
+    getCalendarDate:function(){
+        var d = new Date();
+        var whichday = d.getDay();
+        var day = d.getDate();
+        var monthno = d.getMonth();
+        var daymark;
+        var year = d.getFullYear();
+        if (day == 1){
+            daymark = "st";
+        } else if (day == 2) {
+            daymark = "nd";
+        } else if (day == 3) {
+            daymark = "rd";
+        } else {
+            daymark = "th";
+        }
+        var month;
+        if (monthno == 0){
+            month = "January"
+        } else if (monthno == 1){
+            month = "February"
+        } else if (monthno == 2){
+            month = "March"
+        } else if (monthno == 3){
+            month = "April"
+        } else if (monthno == 4){
+            month = "May"
+        } else if (monthno == 5){
+            month = "June"
+        } else if (monthno == 6){
+            month = "July"
+        } else if (monthno == 7){
+            month = "August"
+        } else if (monthno == 8){
+            month = "September"
+        } else if (monthno == 9){
+            month = "October"
+        } else if (monthno == 10){
+            month = "November"
+        } else if (monthno == 11){
+            month = "December"
+        }
+
+        let dateDetails = {
+            whichday :whichday,
+            day:day,
+            monthno :monthno,
+            daymark: daymark,
+            year:year,
+            month:month
+        }
+
+        return dateDetails
+    }
 
 };
