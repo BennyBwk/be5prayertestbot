@@ -16,6 +16,12 @@ const flow = homeHelper.flow ;
 
 
 
+
+
+
+
+
+
 // ------------- THE "START" COMMAND------------------
 bot.command('start', (ctx) => {
     homeHelper.checkUserAlreadyExists( ctx, function(user){
@@ -57,14 +63,24 @@ bot.command('start', (ctx) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
 // -------------- ADD VERSES ----------
-bot.command('add', (ctx) => {
+flow.command('add', (ctx) => {
     if(homeHelper.isAdmin(ctx)){
         ctx.flow.enter('addVersesForTheWeekWizard')
     }else{
 
     }
-});
+})
 
 
 
@@ -78,7 +94,32 @@ bot.command('add', (ctx) => {
 
 
 
-flow.command('answer', (ctx) => ctx.flow.enter('super-wizard'))
+
+
+
+
+
+
+
+
+
+
+flow.command('answer', (ctx) => {
+    ctx.flow.enter('super-wizard')
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

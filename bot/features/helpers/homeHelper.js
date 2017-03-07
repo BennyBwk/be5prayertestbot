@@ -5,8 +5,35 @@ const Users = require('../../../models/Users.js');
 const Verses = require('../../../models/Verses.js');
 const AdminUsers = require('../../../models/AdminUsers.js');
 
-const verseAdderICs = ['19663241','17433879'] // Benny and Joshua's Telegram IDs
+const verseAdderICs = [19663241, 17433879] // Benny and Joshua's Telegram IDs
 const flow = new TelegrafFlow();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 let correctWords;
 let score;
@@ -63,23 +90,78 @@ const superWizard = new WizardScene('super-wizard',
     }
 );
 
+flow.register(superWizard);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const addVersesForTheWeekWizard = new WizardScene('addVersesForTheWeekWizard',
     (ctx) => {
-        ctx.reply('1')
-        ctx.flow.wizard.next();
+        ctx.replyWithHTML('Please enter the verse to show for <b>MONDAY</b>. <i>(No missing blanks)</i> 🗓') // The first question
+        ctx.flow.wizard.next()
     },
     (ctx) => {
-        ctx.reply('2')
-        ctx.flow.wizard.next();
-    },
-    (ctx) => {
-        ctx.reply('3')
-        ctx.flow.wizard.next();
-    },
+        console.log(ctx.update.message.text) //Response to A
 
+        ctx.replyWithHTML('Please enter the verse to show for <b>TUESDAY</b>. Denote <b>MISSING BLANKS</b> with ________ .')
+        ctx.flow.wizard.next()
+    },
     (ctx) => {
-        console.log(ctx.update.message.text);
-        ctx.reply('4')
+        console.log(ctx.update.message.text) //Response to B
+
+        ctx.replyWithHTML('Please enter the correct answers for the missing blanks. <b>Please separate each answer with a comma.</b> \nExample: <i>God, loved, world, everlasting</i>')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to C
+
+        ctx.replyWithHTML('Please enter the verse to show for <b>WEDNESDAY</b>. Denote <i>MISSING BLANKS</i> with ________ .')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to D
+
+        ctx.replyWithHTML('Please enter the correct answers for the missing blanks. <b>Please separate each answer with a comma.</b> \nExample: <i>God, loved, world, everlasting</i>')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to E
+
+        ctx.replyWithHTML('Please enter the verse to show for <b>THURSDAY</b>. Denote <i>MISSING BLANKS</i> with ________ .')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to F
+
+        ctx.replyWithHTML('Please enter the correct answers for the missing blanks. <b>Please separate each answer with a comma.</b> \nExample: <i>God, loved, world, everlasting</i>')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to E
+
+        ctx.replyWithHTML('Thank you!')
         ctx.flow.leave();
     }
 );
@@ -88,9 +170,40 @@ flow.register(addVersesForTheWeekWizard);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
 
     flow: flow,
+
+
+
+
+
+
+
+
+
+
+
 
     checkUserAlreadyExists: function(ctx, callback){
         let userObject = ctx.update.message.from
@@ -108,6 +221,15 @@ module.exports = {
             }
         );
     },
+
+
+
+
+
+
+
+
+
 
 
 
@@ -167,20 +289,23 @@ module.exports = {
         return dateDetails
     },
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     isAdmin: (ctx) => {
         let userId = ctx.message.from.id
         return (verseAdderICs.indexOf(userId) != -1)
-    }
+    },
 
-    // isAdmin:(callback) => {
-    //     AdminUsers.find({}, function(err, users) {
-    //         if (err) throw err;
-    //         let adminUsersArray = []
-    //         users.forEach((user) => {
-    //             adminUsersArray.push( user._id )
-    //         });
-    //
-    //     });
-    // }
 
 };
