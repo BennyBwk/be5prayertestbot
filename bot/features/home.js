@@ -10,7 +10,11 @@ const flow = homeHelper.flow ;
 
 // ------------- THE "START" COMMAND------------------
 bot.command('start', (ctx) => {
-    globalCtx = ctx;
+    
+    homeHelper.checkUserAlreadyExists( ctx, function(user){
+        console.log(user)
+    });
+    
     console.log("\n\n", "home.js:18       ", "\n", ctx.update);
     // running /start is also able to clear the cache on Telegram's side.
     ctx.replyWithHTML("Hello, my name is <b>🦁 SevenThreeBot</b>, your \nfriendly bible verse buddy!");

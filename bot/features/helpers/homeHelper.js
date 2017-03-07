@@ -1,6 +1,7 @@
 const TelegrafFlow = require('telegraf-flow')
 const { WizardScene } = TelegrafFlow
 const Promise = require('bluebird');
+const User = require('../../../models/User.js');
 
 const flow = new TelegrafFlow();
 
@@ -66,6 +67,25 @@ flow.register(superWizard);
 module.exports = {
 
     flow: flow,
+    
+    checkUserAlreadyExists: function(ctx, callback){
+        let userObject = ctx.update.message.from
+        User.update(
+            { telegram_id : userObject.id },
+            {
+                telegram_id: userObject.id,
+                username: userObject.username,
+                preferred_time: "BLANK"
+            },
+            { upsert : true },
+            function(error,doc) {
+                if (error) throw error;
+                console.log("\n\n\n","admin.js:19 - /register","\n",doc)
+            }
+        );
+    },
+    
+    
 
     getCalendarDate:function(){
         var d = new Date();
@@ -83,6 +103,7 @@ module.exports = {
         } else {
             daymark = "th";
         }
+        
         var month;
         if (monthno == 0){
             month = "January"
