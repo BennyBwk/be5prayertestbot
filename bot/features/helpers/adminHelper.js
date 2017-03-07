@@ -1,5 +1,5 @@
 const TempWaitingListUser = require('../../../models/TempWaitingListUser.js');
-const AdminUser = require('../../../models/AdminUser.js');
+const AdminUsers = require('../../../models/AdminUsers.js');
 const masterAdminID = "17433879"; //This is my (Joshua's) telegram ID
 
 module.exports = {
@@ -32,7 +32,7 @@ module.exports = {
     },
 
     findAdminUser: function (telegramUsername,callback){
-        AdminUser
+        AdminUsers
         .find({username: telegramUsername})
         .limit(1)
         .exec(function(error, doc) {
@@ -45,7 +45,7 @@ module.exports = {
         // Search for the user's temp waiting list application data
         this.findUserForApproval(telegramUsername,function(doc){
             if(doc.length>0){
-                AdminUser.update(
+                AdminUsers.update(
                     { telegram_id : doc[0].telegram_id },
                     {
                         telegram_id: doc[0].telegram_id,
@@ -73,7 +73,7 @@ module.exports = {
                 message = "Admin User does not exist! 🤔";
                 callback(message);
             }else{
-                AdminUser.findOneAndRemove({ username: theUsername}, function(err) {
+                AdminUsers.findOneAndRemove({ username: theUsername}, function(err) {
                     if (err) throw err;
                     message = "Admin User @" + theUsername + " has been removed! 🚷";
                     callback(message);
@@ -84,7 +84,7 @@ module.exports = {
 
 
     showAllAdminUsers: function(callback){
-        AdminUser.find({}, function(err, users) {
+        AdminUsers.find({}, function(err, users) {
         if (err) throw err;
             callback(users);
         });
@@ -98,10 +98,10 @@ module.exports = {
 
 
     addNewFieldToAllUsers: () => {
-        AdminUser.find({}, function(err, users) {
+        AdminUsers.find({}, function(err, users) {
             if (err) throw err;
             users.forEach((user) => {
-                AdminUser.update(
+                AdminUsers.update(
                     {_id: user._id},
                     {$set: { cg: "unset" }},
                     { upsert : true },
@@ -115,7 +115,7 @@ module.exports = {
     },
 
     assignCgToPerson: function(theUsername, cgToSet, callback){
-        AdminUser.update(
+        AdminUsers.update(
             { username : theUsername },
             { cg: cgToSet },
             { upsert : true },
