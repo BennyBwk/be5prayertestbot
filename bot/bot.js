@@ -9,7 +9,7 @@ const { WizardScene } = TelegrafFlow ;
 const {simpleRouter, LoginHTMLMarkup} = require('./router/router.js');
 
 // New bot instance
-const bot = new Telegraf(process.env.TOKEN);
+const bot = new Telegraf("332098194:AAEajnJlqclK_skVTB1YH4FAiq6zeBOksA0");
 // This allows chats to have a session object to store stuff
 bot.use(memorySession());
 

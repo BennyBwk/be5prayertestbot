@@ -1,6 +1,7 @@
 const TelegrafFlow = require('telegraf-flow')
 const { WizardScene } = TelegrafFlow
 const Promise = require('bluebird');
+const User = require('../../../models/User.js');
 
 const flow = new TelegrafFlow();
 
@@ -36,9 +37,7 @@ const superWizard = new WizardScene('super-wizard',
         ctx.reply('For '+ answeredWords[0] +' so loved ' + answeredWords[1] + ' that He gave His only ______, that whoever believe in Him should not perish but have everlasting life.\n\n What is the third word?')
         ctx.flow.wizard.next()
     },
-    // (ctx) => {
-    //
-    // },
+
     (ctx) => {
 
         repliedWord = ctx.update.message.text;
@@ -67,6 +66,81 @@ flow.register(superWizard);
 
 module.exports = {
 
-    flow: flow
+    flow: flow,
+    
+    checkUserAlreadyExists: function(ctx, callback){
+        let userObject = ctx.update.message.from
+        User.update(
+            { telegram_id : userObject.id },
+            {
+                telegram_id: userObject.id,
+                username: userObject.username,
+                preferred_time: "BLANK"
+            },
+            { upsert : true },
+            function(error,doc) {
+                if (error) throw error;
+                console.log("\n\n\n","admin.js:19 - /register","\n",doc)
+            }
+        );
+    },
+    
+    
+
+    getCalendarDate:function(){
+        var d = new Date();
+        var whichday = d.getDay();
+        var day = d.getDate();
+        var monthno = d.getMonth();
+        var daymark;
+        var year = d.getFullYear();
+        if (day == 1){
+            daymark = "st";
+        } else if (day == 2) {
+            daymark = "nd";
+        } else if (day == 3) {
+            daymark = "rd";
+        } else {
+            daymark = "th";
+        }
+        
+        var month;
+        if (monthno == 0){
+            month = "January"
+        } else if (monthno == 1){
+            month = "February"
+        } else if (monthno == 2){
+            month = "March"
+        } else if (monthno == 3){
+            month = "April"
+        } else if (monthno == 4){
+            month = "May"
+        } else if (monthno == 5){
+            month = "June"
+        } else if (monthno == 6){
+            month = "July"
+        } else if (monthno == 7){
+            month = "August"
+        } else if (monthno == 8){
+            month = "September"
+        } else if (monthno == 9){
+            month = "October"
+        } else if (monthno == 10){
+            month = "November"
+        } else if (monthno == 11){
+            month = "December"
+        }
+
+        let dateDetails = {
+            whichday :whichday,
+            day:day,
+            monthno :monthno,
+            daymark: daymark,
+            year:year,
+            month:month
+        }
+
+        return dateDetails
+    }
 
 };
