@@ -1,8 +1,6 @@
-const bcrypt = require('bcrypt-nodejs');
-const crypto = require('crypto');
 const {mongoose} = require('../database/db.js');
 
-const adminUserSchema = new mongoose.Schema({
+const adminUsersSchema = new mongoose.Schema({
     telegram_id: String,
     first_name: String,
     last_name: String,
@@ -12,6 +10,6 @@ const adminUserSchema = new mongoose.Schema({
     cg: String
 });
 
-const AdminUser = mongoose.model('AdminUser', adminUserSchema);
+const AdminUsers = mongoose.model('AdminUser', adminUsersSchema);
 
-module.exports = AdminUser ;
+module.exports = AdminUsers ;

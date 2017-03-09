@@ -1,9 +1,46 @@
 const TelegrafFlow = require('telegraf-flow')
 const { WizardScene } = TelegrafFlow
 const Promise = require('bluebird');
-const User = require('../../../models/User.js');
+const Users = require('../../../models/Users.js');
+const Verses = require('../../../models/Verses.js');
+const AdminUsers = require('../../../models/AdminUsers.js');
 
+const verseAdderICs = [19663241, 17433879] // Benny and Joshua's Telegram IDs
 const flow = new TelegrafFlow();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 let correctWords;
 let score;
@@ -64,13 +101,174 @@ flow.register(superWizard);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const addVersesForTheWeekWizard = new WizardScene('addVersesForTheWeekWizard',
+    (ctx) => {
+        ctx.replyWithHTML('Please key in the <b>TOPIC</b> for this challenge (case sensitive)!  \n<i>i.e. Upside Down Faith, Easter, Missions, Prayer etc etc</i>') // The first question
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to B
+        ctx.session.topic = ctx.update.message.text
+
+        ctx.replyWithHTML('Please enter the <b>Scripture Reference</b> for this challenge.\n<i>i.e. John 3:16 </i>')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to B
+        ctx.session.scripture_ref = ctx.update.message.text
+
+        ctx.replyWithHTML('Please enter the <b>FULL VERSE</b> to show for <b>MONDAY</b>. \n<i>(No missing blanks)</i> 🗓')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to A
+        ctx.session.full_verse = ctx.update.message.text
+
+        ctx.replyWithHTML('Please enter the verse to show for <b>TUESDAY</b>. \nDenote <b>MISSING BLANKS</b> with ________ .')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to B
+        ctx.session.challenge_tuesday = ctx.update.message.text
+
+        ctx.replyWithHTML('Please enter the correct answers for the missing blanks. \n<b>Please separate each answer with a comma.</b> \nExample: <i>God, loved, world, everlasting</i>')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to C
+        ctx.session.answers_tuesday = (ctx.update.message.text).replace(/\s+/g,"").split(",")
+
+        ctx.replyWithHTML('Please enter the verse to show for <b>WEDNESDAY</b>. \nDenote <i>MISSING BLANKS</i> with ________ .')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to D
+        ctx.session.challenge_wednesday = ctx.update.message.text
+
+        ctx.replyWithHTML('Please enter the correct answers for the missing blanks. \n<b>Please separate each answer with a comma.</b> \nExample: <i>God, loved, world, everlasting</i>')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to E
+        ctx.session.answers_wednesday = (ctx.update.message.text).replace(/\s+/g,"").split(",")
+
+        ctx.replyWithHTML('Please enter the verse to show for <b>THURSDAY</b>. \nDenote <i>MISSING BLANKS</i> with ________ .')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to F
+        ctx.session.challenge_thursday = ctx.update.message.text
+
+        ctx.replyWithHTML('Please enter the correct answers for the missing blanks. \n<b>Please separate each answer with a comma.</b> \nExample: <i>God, loved, world, everlasting</i>')
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to E
+        ctx.session.answers_thursday = (ctx.update.message.text).replace(/\s+/g,"").split(",")
+
+        ctx.replyWithHTML('Thank you!')
+        Verses.update(
+            { topic : ctx.session.topic },
+            {
+                topic: ctx.session.topic,
+                scripture_ref: ctx.session.scripture_ref,
+                full_verse: ctx.session.full_verse,
+                challenge_tuesday: ctx.session.challenge_tuesday,
+                answers_tuesday: ctx.session.answers_tuesday,
+                challenge_wednesday: ctx.session.challenge_wednesday,
+                answers_wednesday: ctx.session.answers_wednesday,
+                challenge_thursday: ctx.session.challenge_thursday,
+                answers_thursday: ctx.session.answers_thursday,
+            },
+            { upsert : true },
+            function(error,doc) {
+                if (error) throw error;
+                console.log("homeHelper.js:216", doc)
+            }
+        );
+        ctx.flow.leave();
+    }
+);
+
+flow.register(addVersesForTheWeekWizard);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
 
     flow: flow,
-    
+
+
+
+
+
+
+
+
+
+
+
+
     checkUserAlreadyExists: function(ctx, callback){
         let userObject = ctx.update.message.from
-        User.update(
+        Users.update(
             { telegram_id : userObject.id },
             {
                 telegram_id: userObject.id,
@@ -84,8 +282,17 @@ module.exports = {
             }
         );
     },
-    
-    
+
+
+
+
+
+
+
+
+
+
+
 
     getCalendarDate:function(){
         var d = new Date();
@@ -103,7 +310,7 @@ module.exports = {
         } else {
             daymark = "th";
         }
-        
+
         var month;
         if (monthno == 0){
             month = "January"
@@ -141,6 +348,25 @@ module.exports = {
         }
 
         return dateDetails
-    }
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    isAdmin: (ctx) => {
+        let userId = ctx.message.from.id
+        return (verseAdderICs.indexOf(userId) != -1)
+    },
+
 
 };
