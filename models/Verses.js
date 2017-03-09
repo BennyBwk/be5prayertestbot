@@ -1,9 +1,9 @@
 const {mongoose} = require('../database/db.js');
 
 const Verses = mongoose.model('Verses', new mongoose.Schema({
-    verse_id: String,
     topic: String,
     scripture_ref: String,
+    full_verse: String,
     challenge_tuesday: String,
     answers_tuesday: Array,
     challenge_wednesday: String,

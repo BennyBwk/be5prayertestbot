@@ -5,6 +5,25 @@ const {simpleRouter, setPasswordMarkup} = require('../router/router.js');
 const adminHelper = require('./helpers/adminHelper.js');
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //---------------------------SHOW ADMIN COMMANDS--------------------------------
 bot.command('special', (ctx) => {
     if(adminHelper.isTheUserTheMasterAdmin(ctx)){
@@ -23,6 +42,34 @@ bot.command('special', (ctx) => {
 })
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //----------------------------------REGISTER--------------------------------
 bot.command('register', (ctx) => {
     console.log(ctx.update.message);
@@ -33,6 +80,37 @@ bot.command('register', (ctx) => {
     // Tell the user that his/her application has been received!
     return ctx.reply("Admin User Application received!✔️💯\nWe will let you know in person, \nonce your registration is approved! 😊");
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //----------------------------------AUTHORISE REGISTRANTS-------------------
@@ -69,6 +147,35 @@ bot.hears(/reject (.+)/, (ctx) => {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //-----------------LIST ALL ADMIN USERS--------------------
 bot.command('admins', (ctx) => {
     if(adminHelper.isTheUserTheMasterAdmin(ctx)){
@@ -93,6 +200,22 @@ bot.command('admins', (ctx) => {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //---------------------- ADD NEW FIELD TO EVERYONE ---------------
 bot.command('newField', (ctx) => {
     if(adminHelper.isTheUserTheMasterAdmin(ctx)){
@@ -102,6 +225,29 @@ bot.command('newField', (ctx) => {
         return ctx.replyWithHTML("<i>Sorry, you are not authorized to run this command!</i>🚷 ");
     }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //-----------------------------DEAUTHORISE EXISTING ADMIN USER-------------------
@@ -122,11 +268,65 @@ bot.hears(/setCG (.+)/, (ctx) => {
     }
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 bot.hears(/addCG (.+)/, (ctx) => {
     adminHelper.addNewCG( ctx.match[1], function( cgHasBeenAdded ){
 
     })
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //---Import this inside bot.js at the bottom----

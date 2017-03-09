@@ -1,10 +1,21 @@
 //--------MODULE IMPORTS---------------
 const Telegraf = require('telegraf');
+const { Extra, Markup} = require('telegraf');
 const {bot} = require('../bot.js');
 const {simpleRouter, setPasswordMarkup} = require('../router/router.js');
 const homeHelper = require('./helpers/homeHelper.js');
 const cron = require('node-cron');
 const flow = homeHelper.flow ;
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -30,6 +41,7 @@ bot.command('start', (ctx) => {
     console.log("\n\n", "home.js:18       ", "\n", ctx.update);
     // running /start is also able to clear the cache on Telegram's side.
     ctx.replyWithHTML("Hello, my name is <b>🦁 SevenThreeBot</b>, your \nfriendly bible verse buddy!");
+
     var task = cron.schedule('0 25 17 * * 1-5', function() {
         let dateTimeStuff = homeHelper.getCalendarDate()
 
@@ -58,6 +70,45 @@ bot.command('start', (ctx) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ------------- THE "START" COMMAND------------------
+bot.command('manage', (ctx) => {
+    if(homeHelper.isAdmin(ctx)){
+        let mainAdminMenuMarkup = Extra
+            .HTML()
+            .markup((m) => m.inlineKeyboard([
+                m.callbackButton('💡 Create Verse Challenge', 'main_admin_menu:create'),
+                m.callbackButton('📋 List All Challenges', 'main_admin_menu:read'),
+                m.callbackButton('✏️ Edit Challenge', 'main_admin_menu:update'),
+                m.callbackButton('🚫 Delete Challenge', 'main_admin_menu:delete'),
+            ], {columns: 2}));
+        ctx.replyWithHTML("Select an option below to continue...",mainAdminMenuMarkup);
+    }else{
+        ctx.replyWithHTML("Sorry, this command is not available");
+    }
+});
+
+
+
+simpleRouter.on('main_admin_menu', (ctx) => {
+    ctx.editMessageText(`Set Password: <b>${ctx.session.passwordStarField}</b>`, setPasswordMarkup1).catch(() => undefined)
+});
 
 
 
@@ -124,6 +175,8 @@ flow.command('answer', (ctx) => {
 
 
 bot.on('text', flow.middleware());
+
+
 
 //---Import this inside bot.js at the bottom----
 module.exports = {
