@@ -4,6 +4,7 @@ const Promise = require('bluebird');
 //DB Imports
 const Users = require('../../../models/Users.js');
 const Verses = require('../../../models/Verses.js');
+const Scores = require('../../../models/Scores.js');
 const AdminUsers = require('../../../models/AdminUsers.js');
 //Flow & Router Imports
 const TelegrafFlow = require('telegraf-flow')
@@ -456,4 +457,26 @@ module.exports = {
     },
 
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    getUserScores:function(ctx, callback){
+        let userId = ctx.update.message.from.id
+        Scores.find({"telegram_id": userId}, function(err, scores){
+            callback(scores);
+        });
+    }
+    
+    getVerseInfo:function(verseid, callback){
+        Verses.find({"verse_id": verseid}, function(err, verses){
+            callback(verses);
+        });
+    }
 };

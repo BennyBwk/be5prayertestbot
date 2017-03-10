@@ -97,15 +97,65 @@ let main_admin_menu_markup = Extra
     m.callbackButton('🚫 Delete Challenge', 'main_admin_menu:delete'),
     m.callbackButton('👊🏼 Set Challenge For The Week', 'main_admin_menu:set_challenge_for_week'),
 ], {columns: 2}));
+// ------------- THE "SCORE" COMMAND------------------
+bot.command('score', (ctx) => {
+    // Get user's score
+    let overallscore = 0;
+    let fullmarkscore = 0;
+    let scorepercentage;
+    let scoremessage = "";
+    let verseid = "";
+    let topic = "";
+    let verse = "";
+    
+    homeHelper.getUserScores( ctx, function(scores){
+        
 
+        scores.forEach(function(scoreEntry){
+            overallscore = overallscore + scoreEntry.score
+            fullmarkscore = fullmarkscore + scoreEntry.fullmarks
+        });
+        
+        scorepercentage = (overallscore/fullmarkscore) * 100;
+        scoremessage = scoremessage + "Overall Score: " + overallscore + " / " + fullmarkscore + "\n Percentage: " + scorepercentage + "% \n\n-------------------------\n";
 
+        scores.forEach(function(scoreEntry){
+            //find verse using id
+            verseid = scoreEntry.verse_id;
+            homeHelper.getVerseInfo( verseid, function(verses){
+                topic = verses.topic;
+                verse = verses.scripture_ref;
+            });
+            scoremessage = scoremessage + "\nTopic: " + topic + "\nVerse: " + verse + "\nScore: " + scoreEntry.score + "\n"
+        });
+        
+        ctx.replyWithHTML(scoremessage);
+    });
+});
 let list_all_challenges_markup = Extra
 .HTML()
 .markup((m) => m.inlineKeyboard([
     m.callbackButton('👈🏼 Back To Main Menu', 'list_all_challenges_menu:back'),
 ], {columns: 2}));
 
-// ------------- THE "MENU" COMMAND------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ------------- THE "MANAGE" COMMAND------------------
 bot.command('manage', (ctx) => {
     if(homeHelper.isAdmin_normal(ctx)){
         ctx.replyWithHTML("Select an option below to continue...",main_admin_menu_markup);
