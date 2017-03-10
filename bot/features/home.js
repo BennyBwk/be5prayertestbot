@@ -83,11 +83,60 @@ bot.command('start', (ctx) => {
 
 
 
+// ------------- THE "SCORE" COMMAND------------------
+bot.command('score', (ctx) => {
+    // Get user's score
+    let overallscore = 0;
+    let fullmarkscore = 0;
+    let scorepercentage;
+    let scoremessage = "";
+    let verseid = "";
+    let topic = "";
+    let verse = "";
+    
+    homeHelper.getUserScores( ctx, function(scores){
+        
+
+        scores.forEach(function(scoreEntry){
+            overallscore = overallscore + scoreEntry.score
+            fullmarkscore = fullmarkscore + scoreEntry.fullmarks
+        });
+        
+        scorepercentage = (overallscore/fullmarkscore) * 100;
+        scoremessage = scoremessage + "Overall Score: " + overallscore + " / " + fullmarkscore + "\n Percentage: " + scorepercentage + "% \n\n-------------------------\n";
+
+        scores.forEach(function(scoreEntry){
+            //find verse using id
+            verseid = scoreEntry.verse_id;
+            homeHelper.getVerseInfo( verseid, function(verses){
+                topic = verses.topic;
+                verse = verses.scripture_ref;
+            });
+            scoremessage = scoremessage + "\nTopic: " + topic + "\nVerse: " + verse + "\nScore: " + scoreEntry.score + "\n"
+        });
+        
+        ctx.replyWithHTML(scoremessage);
+    });
+});
 
 
 
 
-// ------------- THE "START" COMMAND------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ------------- THE "MANAGE" COMMAND------------------
 bot.command('manage', (ctx) => {
     if(homeHelper.isAdmin(ctx)){
         let mainAdminMenuMarkup = Extra

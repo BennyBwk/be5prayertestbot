@@ -3,6 +3,7 @@ const { WizardScene } = TelegrafFlow
 const Promise = require('bluebird');
 const Users = require('../../../models/Users.js');
 const Verses = require('../../../models/Verses.js');
+const Scores = require('../../../models/Scores.js');
 const AdminUsers = require('../../../models/AdminUsers.js');
 
 const verseAdderICs = [19663241, 17433879] // Benny and Joshua's Telegram IDs
@@ -369,4 +370,26 @@ module.exports = {
     },
 
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    getUserScores:function(ctx, callback){
+        let userId = ctx.update.message.from.id
+        Scores.find({"telegram_id": userId}, function(err, scores){
+            callback(scores);
+        });
+    }
+    
+    getVerseInfo:function(verseid, callback){
+        Verses.find({"verse_id": verseid}, function(err, verses){
+            callback(verses);
+        });
+    }
 };
