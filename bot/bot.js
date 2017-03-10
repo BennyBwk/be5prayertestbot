@@ -5,18 +5,12 @@ const TelegrafFlow = require('telegraf-flow');
 const { WizardScene } = TelegrafFlow ;
 
 
-//-----ROUTER IMPORTS-----
-const {simpleRouter, LoginHTMLMarkup} = require('./router/router.js');
-
 // New bot instance
-const bot = new Telegraf("332098194:AAEajnJlqclK_skVTB1YH4FAiq6zeBOksA0");
-// This allows chats to have a session object to store stuff
-bot.use(memorySession());
-
-//---------USE ROUTER-----------
-bot.on('callback_query', simpleRouter.middleware())
+// const bot = new Telegraf("332098194:AAEajnJlqclK_skVTB1YH4FAiq6zeBOksA0");
+const bot = new Telegraf("346554693:AAFEkwIBXEF_yYRUO9olWCBoV59vOwgyPHs"); // Josh's token for testing
 
 //---------BEGIN POLLING--------
+bot.use(memorySession());
 bot.startPolling();
 
 //-------MODULE EXPORTS--------

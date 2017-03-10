@@ -1,10 +1,16 @@
-const TelegrafFlow = require('telegraf-flow')
-const { WizardScene } = TelegrafFlow
+// Basic Imports
+const Telegraf = require('telegraf')
 const Promise = require('bluebird');
+//DB Imports
 const Users = require('../../../models/Users.js');
 const Verses = require('../../../models/Verses.js');
 const AdminUsers = require('../../../models/AdminUsers.js');
-
+//Flow & Router Imports
+const TelegrafFlow = require('telegraf-flow')
+const { Router, Extra, memorySession } = Telegraf
+const { WizardScene } = TelegrafFlow
+const { Scene } = TelegrafFlow
+//Variable Initialisation
 const verseAdderICs = [19663241, 17433879] // Benny and Joshua's Telegram IDs
 const flow = new TelegrafFlow();
 
@@ -131,7 +137,7 @@ flow.register(superWizard);
 
 
 
-const addVersesForTheWeekWizard = new WizardScene('addVersesForTheWeekWizard',
+const add_verses_for_weekend = new WizardScene('add_verses_for_weekend',
     (ctx) => {
         ctx.replyWithHTML('Please key in the <b>TOPIC</b> for this challenge (case sensitive)!  \n<i>i.e. Upside Down Faith, Easter, Missions, Prayer etc etc</i>') // The first question
         ctx.flow.wizard.next()
@@ -220,7 +226,101 @@ const addVersesForTheWeekWizard = new WizardScene('addVersesForTheWeekWizard',
     }
 );
 
-flow.register(addVersesForTheWeekWizard);
+flow.register(add_verses_for_weekend);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const answer_challenge = new WizardScene('answer_challenge',
+    (ctx) => {
+        let step_one_message = '🔥 Challenge of the day:\n'
+        step_one_message = step_one_message + ""
+        ctx.replyWithHTML(step_one_message) // The first question
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to B
+
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to B
+
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to A
+
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to B
+
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to C
+
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to D
+
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to E
+
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to F
+
+        ctx.flow.wizard.next()
+    },
+    (ctx) => {
+        console.log(ctx.update.message.text) //Response to E
+
+        ctx.flow.leave();
+    }
+);
+
+flow.register(answer_challenge);
+
+
 
 
 
@@ -257,15 +357,6 @@ module.exports = {
 
 
 
-
-
-
-
-
-
-
-
-
     checkUserAlreadyExists: function(ctx, callback){
         let userObject = ctx.update.message.from
         Users.update(
@@ -282,14 +373,6 @@ module.exports = {
             }
         );
     },
-
-
-
-
-
-
-
-
 
 
 
@@ -352,20 +435,24 @@ module.exports = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-    isAdmin: (ctx) => {
+    isAdmin_normal: (ctx) => {
         let userId = ctx.message.from.id
         return (verseAdderICs.indexOf(userId) != -1)
+    },
+
+
+    isAdmin_flow: (ctx) => {
+        console.log(ctx.update.callback_query.from.id);
+        let userId = ctx.update.callback_query.from.id;
+        return (verseAdderICs.indexOf(userId) != -1)
+    },
+
+
+    find_all_verses: (callback) => {
+        Verses.find({}, function(err, verses) {
+            if (err) throw err;
+            callback(verses)
+        });
     },
 
 

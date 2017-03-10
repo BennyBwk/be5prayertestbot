@@ -25,23 +25,23 @@ const adminHelper = require('./helpers/adminHelper.js');
 
 
 //---------------------------SHOW ADMIN COMMANDS--------------------------------
-bot.command('special', (ctx) => {
-    if(adminHelper.isTheUserTheMasterAdmin(ctx)){
-        let message = "🔥<b>Admin Commands:</b>🔥";
-        message = message + "\n\n" + "<b>/admins</b> \nGets a list of all AdminUsers."
-        message = message + "\n\n" + "<b>/register</b> \nUser gets registered."
-        message = message + "\n\n" + "<b>/approve </b><i>usernameHere</i> \nApproves a registered User as an AdminUser."
-        message = message + "\n\n" + "<b>/reject </b><i>usernameHere</i> \nRemoves a registered User as an AdminUser."
-        message = message + "\n\n" + "<b>/logoutAll </b> \nLogs all AdminUsers out."
-        message = message + "\n\n" + "<b>/newField </b> \nAdds a new field/property to all AdminUsers in the database."
-        message = message + "\n\n" + "<b>/setCG </b><i>username </i><i>cgName</i>  \nSets the CG for a particular user."
-        ctx.replyWithHTML(message);
-    }else{
-        return ctx.replyWithHTML("<i>Sorry, you are not authorized to run this command!</i>🚷 ");
-    }
-})
-
-
+// bot.command('special', (ctx) => {
+//     if(adminHelper.isTheUserTheMasterAdmin(ctx)){
+//         let message = "🔥<b>Admin Commands:</b>🔥";
+//         message = message + "\n\n" + "<b>/admins</b> \nGets a list of all AdminUsers."
+//         message = message + "\n\n" + "<b>/register</b> \nUser gets registered."
+//         message = message + "\n\n" + "<b>/approve </b><i>usernameHere</i> \nApproves a registered User as an AdminUser."
+//         message = message + "\n\n" + "<b>/reject </b><i>usernameHere</i> \nRemoves a registered User as an AdminUser."
+//         message = message + "\n\n" + "<b>/logoutAll </b> \nLogs all AdminUsers out."
+//         message = message + "\n\n" + "<b>/newField </b> \nAdds a new field/property to all AdminUsers in the database."
+//         message = message + "\n\n" + "<b>/setCG </b><i>username </i><i>cgName</i>  \nSets the CG for a particular user."
+//         ctx.replyWithHTML(message);
+//     }else{
+//         return ctx.replyWithHTML("<i>Sorry, you are not authorized to run this command!</i>🚷 ");
+//     }
+// })
+//
+//
 
 
 
@@ -135,6 +135,30 @@ bot.hears(/approve (.+)/, (ctx) => { // To authorize a person to become an admin
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //-----------------------------DEAUTHORISE EXISTING ADMIN USER-------------------
 bot.hears(/reject (.+)/, (ctx) => {
     if(adminHelper.isTheUserTheMasterAdmin(ctx)){
@@ -217,18 +241,18 @@ bot.command('admins', (ctx) => {
 
 
 //---------------------- ADD NEW FIELD TO EVERYONE ---------------
-bot.command('newField', (ctx) => {
-    if(adminHelper.isTheUserTheMasterAdmin(ctx)){
-        adminHelper.addNewField();
-        return ctx.replyWithHTML("<i>New field added for all users!</i> ");
-    }else{
-        return ctx.replyWithHTML("<i>Sorry, you are not authorized to run this command!</i>🚷 ");
-    }
-});
-
-
-
-
+// bot.command('newField', (ctx) => {
+//     if(adminHelper.isTheUserTheMasterAdmin(ctx)){
+//         adminHelper.addNewField();
+//         return ctx.replyWithHTML("<i>New field added for all users!</i> ");
+//     }else{
+//         return ctx.replyWithHTML("<i>Sorry, you are not authorized to run this command!</i>🚷 ");
+//     }
+// });
+//
+//
+//
+//
 
 
 
@@ -251,22 +275,22 @@ bot.command('newField', (ctx) => {
 
 
 //-----------------------------DEAUTHORISE EXISTING ADMIN USER-------------------
-bot.hears(/setCG (.+)/, (ctx) => {
-    if(adminHelper.isTheUserTheMasterAdmin(ctx)){
-        var usernameOfUser = (ctx.match[1].split(" ")[0] || "");
-        var cgToSet = (ctx.match[1].split(" ")[1] || "");
-        if(cgToSet==="" || usernameOfUser===""){
-            return ctx.replyWithHTML("The correct format should be:\n\n <b>/setCG</b> <i>username</i> <i>cgName</i>");
-        }else{
-            adminHelper.assignCgToPerson(usernameOfUser, cgToSet, function(hasCgBeenSet){
-                console.log("admin.js:172      ", hasCgBeenSet);
-                return ctx.replyWithHTML(usernameOfUser + " has been assigned to " + cgToSet);
-            })
-        }
-    }else{
-        return ctx.replyWithHTML("<i>Sorry, you are not authorized to run this command!</i>🚷 ");
-    }
-});
+// bot.hears(/setCG (.+)/, (ctx) => {
+//     if(adminHelper.isTheUserTheMasterAdmin(ctx)){
+//         var usernameOfUser = (ctx.match[1].split(" ")[0] || "");
+//         var cgToSet = (ctx.match[1].split(" ")[1] || "");
+//         if(cgToSet==="" || usernameOfUser===""){
+//             return ctx.replyWithHTML("The correct format should be:\n\n <b>/setCG</b> <i>username</i> <i>cgName</i>");
+//         }else{
+//             adminHelper.assignCgToPerson(usernameOfUser, cgToSet, function(hasCgBeenSet){
+//                 console.log("admin.js:172      ", hasCgBeenSet);
+//                 return ctx.replyWithHTML(usernameOfUser + " has been assigned to " + cgToSet);
+//             })
+//         }
+//     }else{
+//         return ctx.replyWithHTML("<i>Sorry, you are not authorized to run this command!</i>🚷 ");
+//     }
+// });
 
 
 
@@ -291,16 +315,16 @@ bot.hears(/setCG (.+)/, (ctx) => {
 
 
 
-
-
-
-
-
-bot.hears(/addCG (.+)/, (ctx) => {
-    adminHelper.addNewCG( ctx.match[1], function( cgHasBeenAdded ){
-
-    })
-});
+//
+//
+//
+//
+//
+// bot.hears(/addCG (.+)/, (ctx) => {
+//     adminHelper.addNewCG( ctx.match[1], function( cgHasBeenAdded ){
+//
+//     })
+// });
 
 
 

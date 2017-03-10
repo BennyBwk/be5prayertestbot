@@ -1,6 +1,6 @@
 const {mongoose} = require('../database/db.js');
 
-const adminUsersSchema = new mongoose.Schema({
+const AdminUsers = mongoose.model('AdminUser', new mongoose.Schema({
     telegram_id: String,
     first_name: String,
     last_name: String,
@@ -8,8 +8,6 @@ const adminUsersSchema = new mongoose.Schema({
     numberPassword: String,
     isLoggedIn: Boolean,
     cg: String
-});
-
-const AdminUsers = mongoose.model('AdminUser', adminUsersSchema);
+}));
 
 module.exports = AdminUsers ;
