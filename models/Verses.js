@@ -1,5 +1,3 @@
-const bcrypt = require('bcrypt-nodejs');
-const crypto = require('crypto');
 const {mongoose} = require('../database/db.js');
 
 const Verses = mongoose.model('Verses', new mongoose.Schema({

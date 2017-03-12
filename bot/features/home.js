@@ -6,6 +6,7 @@ const { memorySession } = require('telegraf');
 const cron = require('node-cron');
 const {bot} = require('../bot.js');
 const {simpleRouter} = require('../router/router.js');
+const Verses = require('../../models/Verses.js');
 const homeHelper = require('./helpers/homeHelper.js');
 const flow = homeHelper.flow ;
 bot.use(flow)
@@ -88,15 +89,7 @@ bot.command('start', (ctx) => {
 
 
 
-let main_admin_menu_markup = Extra
-.HTML()
-.markup((m) => m.inlineKeyboard([
-    m.callbackButton('💡 Create Verse Challenge', 'main_admin_menu:create'),
-    m.callbackButton('📋 List All Challenges', 'main_admin_menu:read'),
-    m.callbackButton('✏️ Edit Challenge', 'main_admin_menu:update'),
-    m.callbackButton('🚫 Delete Challenge', 'main_admin_menu:delete'),
-    m.callbackButton('👊🏼 Set Challenge For The Week', 'main_admin_menu:set_challenge_for_week'),
-], {columns: 2}));
+
 // ------------- THE "SCORE" COMMAND------------------
 bot.command('score', (ctx) => {
     // Get user's score
@@ -107,15 +100,15 @@ bot.command('score', (ctx) => {
     let verseid = "";
     let topic = "";
     let verse = "";
-    
+
     homeHelper.getUserScores( ctx, function(scores){
-        
+
 
         scores.forEach(function(scoreEntry){
             overallscore = overallscore + scoreEntry.score
             fullmarkscore = fullmarkscore + scoreEntry.fullmarks
         });
-        
+
         scorepercentage = (overallscore/fullmarkscore) * 100;
         scoremessage = scoremessage + "Overall Score: " + overallscore + " / " + fullmarkscore + "\n Percentage: " + scorepercentage + "% \n\n-------------------------\n";
 
@@ -128,32 +121,67 @@ bot.command('score', (ctx) => {
             });
             scoremessage = scoremessage + "\nTopic: " + topic + "\nVerse: " + verse + "\nScore: " + scoreEntry.score + "\n"
         });
-        
+
         ctx.replyWithHTML(scoremessage);
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let main_admin_menu_markup = Extra
+.HTML()
+.markup((m) => m.inlineKeyboard([
+    m.callbackButton('💡 Create Verse Challenge', 'main_admin_menu:create'),
+    m.callbackButton('📋 List All Challenges', 'main_admin_menu:read'),
+    m.callbackButton('✏️ Edit Challenge', 'main_admin_menu:update'),
+    m.callbackButton('🚫 Delete Challenge', 'main_admin_menu:delete'),
+    m.callbackButton('👊🏼 Set Challenge For The Week', 'main_admin_menu:set_challenge_for_week'),
+], {columns: 2}));
+
 let list_all_challenges_markup = Extra
 .HTML()
 .markup((m) => m.inlineKeyboard([
     m.callbackButton('👈🏼 Back To Main Menu', 'list_all_challenges_menu:back'),
 ], {columns: 2}));
 
+let update_a_challenge_markup = Extra
+.HTML()
+.markup((m) => m.inlineKeyboard([
+    m.callbackButton('👊🏼 Update Challenge Name',                         'update_a_challenge:challenge_name'),
+    m.callbackButton('💬 Update Topic Name',                             'update_a_challenge:topic'),
+    m.callbackButton('🏷 Update Scripture Reference',                    'update_a_challenge:scripture_ref'),
+    m.callbackButton('📖 Update Full Verse (Shown on Monday)',           'update_a_challenge:full_verse'),
+    m.callbackButton('📖 Update Tuesday Challenge',                      'update_a_challenge:challenge_tuesday'),
+    m.callbackButton('📖 Update Tuesday Answers (comma separated)',      'update_a_challenge:answers_tuesday'),
+    m.callbackButton('📖 Update Wednesday Questions',                    'update_a_challenge:challenge_wednesday'),
+    m.callbackButton('📖 Update Wednesday Answers (comma separated)',    'update_a_challenge:answers_wednesday'),
+    m.callbackButton('📖 Update Thursday Questions',                     'update_a_challenge:challenge_thursday'),
+    m.callbackButton('📖 Update Thursday Answers (comma separated)',     'update_a_challenge:answers_thursday'),
+    m.callbackButton('👈🏼 Back To Main Menu', 'update_a_challenge:back')
+], {columns: 1}));
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+let delete_a_challenge_markup = Extra
+.HTML()
+.markup((m) => m.inlineKeyboard([
+    m.callbackButton('Yes, Delete Challenge',                'delete_a_challenge:yes'),
+    m.callbackButton('No, Do Not Delete Challenge',          'delete_a_challenge:back'), // Same as go back
+    m.callbackButton('👈🏼 Back',                                 'delete_a_challenge:back')
+], {columns: 1}));
 
 // ------------- THE "MANAGE" COMMAND------------------
 bot.command('manage', (ctx) => {
@@ -170,6 +198,7 @@ simpleRouter.on('main_admin_menu', (ctx) => {
         switch(ctx.state.value){
             // For the case of creating the verses
             case "create" :
+                ctx.session.main_admin_menu_markup = main_admin_menu_markup //Stores it in the session to be used later on
                 ctx.editMessageText('Create New Verse Challenge Selected! 😛')
                 ctx.flow.enter('add_verses_for_weekend')
                 break;
@@ -180,35 +209,19 @@ simpleRouter.on('main_admin_menu', (ctx) => {
                     verses.forEach((verse)=>{
                         list_all_challenge_message = list_all_challenge_message + "\n<b>Challenge Name</b>: " + verse.challenge_name
                         list_all_challenge_message = list_all_challenge_message + "\n<code>Topic: " + verse.topic + "</code>"
-                        list_all_challenge_message = list_all_challenge_message + "\n<code>Scripture Reference: " + verse.scripture_ref + "</code>"
-                        list_all_challenge_message = list_all_challenge_message + "\n\n\n======================"
+                        list_all_challenge_message = list_all_challenge_message + "\n<code>Reference: " + verse.scripture_ref + "</code>"
+                        list_all_challenge_message = list_all_challenge_message + "\n"
                     })
+                    list_all_challenge_message = list_all_challenge_message + "\n\n======================"
                     ctx.editMessageText( list_all_challenge_message , list_all_challenges_markup )
                 })
                 break;
             // For the case of updating the verses
             case "update" :
-                let update_challenge_buttons = []
-                // Turn all of the challenges into buttons
-                homeHelper.find_all_verses((verses)=>{
-                    // Create the button menu
-                    let update_challenge_menu_markup = Extra
-                    .HTML()
-                    .markup((m) => {
-                        let update_challenge_menu_buttons = verses.map((verse) => {
-                            return m.callbackButton(verse.challenge_name, 'list_all_challenges_menu:back')
-                        })
-                        update_challenge_menu_buttons.push(m.callbackButton('👈🏼 Back To Main Menu', 'list_all_challenges_menu:back'))
-
-                        return m.inlineKeyboard( update_challenge_menu_buttons , {columns: 2})
-                    })
-                    ctx.editMessageText('Choose a Challenge To <b>UPDATE</b>:', update_challenge_menu_markup)
-                })
-
+                homeHelper.choose_challenge_to_update_menu(ctx)
                 break;
             case "delete" :
-
-
+                homeHelper.choose_challenge_to_delete(ctx)
                 break;
             case "set_challenge_for_week" :
 
@@ -235,6 +248,101 @@ simpleRouter.on('list_all_challenges_menu', (ctx) => {
         ctx.replyWithHTML("Sorry, this command is not available");
     }
 });
+
+simpleRouter.on('update_a_challenge_menu', (ctx) => {
+    if(homeHelper.isAdmin_flow(ctx)){
+        ctx.session.verse_id = ctx.state.value // stores the verse_id to be used later
+        ctx.session.update_a_challenge_markup = update_a_challenge_markup // Store this inside for use later.
+        ctx.editMessageText("Choose an attribute of the Challenge to update: ",update_a_challenge_markup)
+    }else{
+        ctx.replyWithHTML("Sorry, this command is not available");
+    }
+});
+
+
+simpleRouter.on('update_a_challenge', (ctx) => {
+    if(homeHelper.isAdmin_flow(ctx)){
+        ctx.session.update_a_challenge_markup = update_a_challenge_markup
+        switch(ctx.state.value){
+            case "challenge_name" :
+                ctx.flow.enter('update_challenge_name')
+                break;
+            case "topic" :
+                ctx.flow.enter('update_topic')
+                break;
+            case "scripture_ref" :
+                ctx.flow.enter('scripture_ref')
+                break;
+            case "full_verse" :
+                ctx.flow.enter('update_full_verse')
+                break;
+            case "challenge_tuesday" :
+                ctx.flow.enter('update_challenge_tuesday')
+                break;
+            case "answers_tuesday" :
+                ctx.flow.enter('update_answers_tuesday')
+                break;
+            case "challenge_wednesday" :
+                ctx.flow.enter('update_challenge_wednesday')
+                break;
+            case "answers_wednesday" :
+                ctx.flow.enter('update_answers_wednesday')
+                break;
+            case "challenge_thursday" :
+                ctx.flow.enter('update_challenge_thursday')
+                break;
+            case "answers_thursday" :
+                ctx.flow.enter('update_answers_thursday')
+                break;
+            case "back" :
+                homeHelper.choose_challenge_to_update_menu(ctx)
+                break;
+            default:
+                //Intentionally Blank
+        }
+    }else{
+        ctx.replyWithHTML("Sorry, this command is not available");
+    }
+});
+
+
+simpleRouter.on('delete_a_challenge_menu', (ctx) => {
+    if(homeHelper.isAdmin_flow(ctx)){
+        ctx.session.verse_id = ctx.state.value // stores the verse_id to be used later
+        ctx.editMessageText("Choose a challenge to delete: ", delete_a_challenge_markup)
+    }else{
+        ctx.replyWithHTML("Sorry, this command is not available");
+    }
+});
+
+
+simpleRouter.on('delete_a_challenge', (ctx) => {
+    if(homeHelper.isAdmin_flow(ctx)){
+        ctx.session.update_a_challenge_markup = update_a_challenge_markup
+        switch(ctx.state.value){
+            case "yes" :
+                Verses.findOneAndRemove({ _id: ctx.session.verse_id }, function(err) {
+                    if (err) throw err;
+                    console.log('Challenge deleted!');
+                    homeHelper.choose_challenge_to_delete(ctx)
+                });
+                break;
+            case "back" :
+                homeHelper.choose_challenge_to_delete(ctx)
+                break;
+            default:
+                //Intentionally Blank
+        }
+    }else{
+        ctx.replyWithHTML("Sorry, this command is not available");
+    }
+});
+
+
+
+
+
+
 
 
 
