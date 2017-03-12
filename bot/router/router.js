@@ -3,20 +3,18 @@ const { Extra, Markup, Router} = require('telegraf');
 
 //-----------ROUTER----------
 
+// Router staff
 const simpleRouter = new Router((ctx) => {
-    // If data not found, resolve Promise
-    if (!ctx.callbackQuery.data) {
-        return Promise.resolve()
+  if (!ctx.callbackQuery || !ctx.callbackQuery.data) {
+    return Promise.resolve()
+  }
+  const parts = ctx.callbackQuery.data.split(':')
+  return Promise.resolve({
+    route: parts[0],
+    state: {
+      value: parts[1]
     }
-    //If data is found, get the route and part
-    const parts = ctx.callbackQuery.data.split(':')
-    return Promise.resolve({
-        route: parts[0],
-        state: {
-            value: ( parts[1] || "")  // ( argumenthere || "") checks for undefined, null and 0 before running someArgument
-            //anyRandomText: someValueHere // You can add stuff to the state! ...these are like params that can be passed in
-        }
-    })
+  })
 })
 
 //---------BUTTON TEXT ~> Route:State--------------
