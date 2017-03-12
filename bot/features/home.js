@@ -300,6 +300,7 @@ simpleRouter.on('update_a_challenge', (ctx) => {
             default:
                 //Intentionally Blank
         }
+        ctx.replyWithHTML("Done!");
     }else{
         ctx.replyWithHTML("Sorry, this command is not available");
     }
