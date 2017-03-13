@@ -121,7 +121,6 @@ bot.command('score', (ctx) => {
 
     homeHelper.getUserScores( ctx, function(scores){
 
-        // console.log(scores)
         scores.forEach(function(scoreEntry){
             overallscore = overallscore + scoreEntry.score
             fullmarkscore = fullmarkscore + scoreEntry.fullmarks
@@ -154,17 +153,6 @@ bot.command('score', (ctx) => {
              })
              ctx.replyWithHTML(scoremessage);
         });
-
-        // scores.forEach(function(scoreEntry){
-        //     //find verse using id
-        //     verseid = scoreEntry.verse_id;
-        //     homeHelper.getVerseInfo( verseid, function(the_verse){
-        //         topic = the_verse.topic;
-        //         verse = the_verse.scripture_ref;
-        //         console.log(the_verse)
-        //     });
-        //     // scoremessage = scoremessage + "\nTopic: " + topic + "\nVerse: " + verse + "\nScore: " + scoreEntry.score + "\n"
-        // });
 
     });
 });
@@ -488,6 +476,15 @@ simpleRouter.on('choose_a_challenge_menu', (ctx) => {
 
 
 
+
+
+
+
+
+
+
+
+
 let public_main_menu_markup = Extra
 .HTML()
 .markup((m) => m.inlineKeyboard([
@@ -505,16 +502,16 @@ simpleRouter.on('main_public_menu', (ctx) => {
     if(homeHelper.isAdmin_flow(ctx)){
         ctx.session.update_a_challenge_markup = update_a_challenge_markup
         switch(ctx.state.value){
-            case "add_friend" :
-                ctx.flow.enter('public_add_friend')
+            case "answer_challenge" :
+                ctx.flow.enter('super-wizard')
                 break;
             case "view_own_score":
 
                 break;
-            case "view_own_score":
+            case "friends_score":
 
                 break;
-            case "view_own_score":
+            case "add_friend":
 
                 break;
             case "friends_score":
@@ -535,14 +532,14 @@ bot.command('begin', (ctx) => {
 });
 
 
-
-flow.command('add', (ctx) => { // Adds a friend
-    ctx.flow.enter('super-wizard')
-})
-
-flow.command('remove', (ctx) => { // Adds a friend
-    ctx.flow.enter('super-wizard')
-})
+//
+// flow.command('add', (ctx) => { // Adds a friend
+//     ctx.flow.enter('super-wizard')
+// })
+//
+// flow.command('remove', (ctx) => { // Adds a friend
+//     ctx.flow.enter('super-wizard')
+// })
 
 
 
