@@ -830,8 +830,8 @@ module.exports = {
     },
 
     getVerseInfo:function(verseid, callback){
-        Verses.find({"verse_id": verseid}, function(err, verses){
-            callback(verses);
+        Verses.find({"_id": verseid}, function(err, verse){
+            callback(verse);
         });
     },
 

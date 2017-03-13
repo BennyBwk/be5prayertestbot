@@ -9,6 +9,7 @@ const {simpleRouter} = require('../router/router.js');
 const Verses = require('../../models/Verses.js');
 const CurrentWeekSettings = require('../../models/CurrentWeekSettings.js');
 const homeHelper = require('./helpers/homeHelper.js');
+const Promise = require('bluebird');
 const flow = homeHelper.flow ;
 bot.use(flow)
 bot.use(simpleRouter)
@@ -120,7 +121,7 @@ bot.command('score', (ctx) => {
 
     homeHelper.getUserScores( ctx, function(scores){
 
-
+        // console.log(scores)
         scores.forEach(function(scoreEntry){
             overallscore = overallscore + scoreEntry.score
             fullmarkscore = fullmarkscore + scoreEntry.fullmarks
@@ -129,17 +130,47 @@ bot.command('score', (ctx) => {
         scorepercentage = (overallscore/fullmarkscore) * 100;
         scoremessage = scoremessage + "Overall Score: " + overallscore + " / " + fullmarkscore + "\n Percentage: " + scorepercentage + "% \n\n-------------------------\n";
 
-        scores.forEach(function(scoreEntry){
-            //find verse using id
-            verseid = scoreEntry.verse_id;
-            homeHelper.getVerseInfo( verseid, function(verses){
-                topic = verses.topic;
-                verse = verses.scripture_ref;
-            });
-            scoremessage = scoremessage + "\nTopic: " + topic + "\nVerse: " + verse + "\nScore: " + scoreEntry.score + "\n"
+        homeHelper.getVerseInfo( "58c057e05831b472978bd2ce", function(the_verse){
+            // console.log(scoreEntry._id)
+            // let info = {}
+            // info.topic = the_verse.topic;
+            // info.verse = the_verse.scripture_ref;
+            console.log(the_verse)
         });
 
-        ctx.replyWithHTML(scoremessage);
+        var promisesArray = scores.map(function(scoreEntry){
+            return new Promise(function(resolve, reject){
+                homeHelper.getVerseInfo( scoreEntry.verse_id, function(the_verse){
+                    let info = {}
+                    info.topic = the_verse[0].topic;
+                    info.scripture_ref = the_verse[0].scripture_ref;
+                    info.score = scoreEntry.score
+                    resolve(info)
+                });
+            });
+        });
+
+        Promise.all(promisesArray).then( infoObjects => {
+             infoObjects.forEach((infoObjects)=>{
+                let topic = infoObjects.topic;
+                let scripture_ref = infoObjects.scripture_ref;
+                let score = infoObjects.score
+                scoremessage = scoremessage + "\nTopic: " + topic + "\nVerse: " + scripture_ref + "\nScore: " + score + "\n"
+             })
+             ctx.replyWithHTML(scoremessage);
+        });
+
+        // scores.forEach(function(scoreEntry){
+        //     //find verse using id
+        //     verseid = scoreEntry.verse_id;
+        //     homeHelper.getVerseInfo( verseid, function(the_verse){
+        //         topic = the_verse.topic;
+        //         verse = the_verse.scripture_ref;
+        //         console.log(the_verse)
+        //     });
+        //     // scoremessage = scoremessage + "\nTopic: " + topic + "\nVerse: " + verse + "\nScore: " + scoreEntry.score + "\n"
+        // });
+
     });
 });
 
@@ -481,6 +512,12 @@ simpleRouter.on('main_public_menu', (ctx) => {
         switch(ctx.state.value){
             case "add_friend" :
                 ctx.flow.enter('public_add_friend')
+                break;
+            case "view_own_score":
+
+                break;
+            case "view_own_score":
+
                 break;
             case "view_own_score":
 
