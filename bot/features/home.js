@@ -130,15 +130,9 @@ bot.command('score', (ctx) => {
         scorepercentage = (overallscore/fullmarkscore) * 100;
         scoremessage = scoremessage + "Overall Score: " + overallscore + " / " + fullmarkscore + "\n Percentage: " + scorepercentage + "% \n\n-------------------------\n";
 
-        homeHelper.getVerseInfo( "58c057e05831b472978bd2ce", function(the_verse){
-            // console.log(scoreEntry._id)
-            // let info = {}
-            // info.topic = the_verse.topic;
-            // info.verse = the_verse.scripture_ref;
-            console.log(the_verse)
-        });
 
         var promisesArray = scores.map(function(scoreEntry){
+
             return new Promise(function(resolve, reject){
                 homeHelper.getVerseInfo( scoreEntry.verse_id, function(the_verse){
                     let info = {}
@@ -148,6 +142,7 @@ bot.command('score', (ctx) => {
                     resolve(info)
                 });
             });
+
         });
 
         Promise.all(promisesArray).then( infoObjects => {
