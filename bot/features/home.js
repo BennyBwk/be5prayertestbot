@@ -7,6 +7,7 @@ const cron = require('node-cron');
 const {bot} = require('../bot.js');
 const {simpleRouter} = require('../router/router.js');
 const Verses = require('../../models/Verses.js');
+const CurrentWeekSettings = require('../../models/CurrentWeekSettings.js');
 const homeHelper = require('./helpers/homeHelper.js');
 const flow = homeHelper.flow ;
 bot.use(flow)
@@ -39,6 +40,11 @@ bot.on('callback_query', simpleRouter.middleware())
 
 
 
+
+
+
+
+
 // ------------- THE "START" COMMAND------------------
 bot.command('start', (ctx) => {
     homeHelper.checkUserAlreadyExists( ctx, function(user){
@@ -46,7 +52,7 @@ bot.command('start', (ctx) => {
     });
     console.log("\n\n", "home.js:46      ", "\n", ctx.update);
     // running /start is also able to clear the cache on Telegram's side.
-    ctx.replyWithHTML("Hello, my name is <b>🦁 SevenThreeBot</b>, your \nfriendly bible verse buddy!");
+    ctx.replyWithHTML("Hello, my name is <b>🦁 SevenThreeBot</b>, your \nfriendly bible verse buddy! \n\nType /begin to access the main menu!");
 
     var task = cron.schedule('0 25 17 * * 1-5', function() {
         let dateTimeStuff = homeHelper.getCalendarDate()
@@ -67,6 +73,17 @@ bot.command('start', (ctx) => {
     }, false);
     task.start();
 });
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -143,6 +160,20 @@ bot.command('score', (ctx) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 let main_admin_menu_markup = Extra
 .HTML()
 .markup((m) => m.inlineKeyboard([
@@ -182,6 +213,37 @@ let delete_a_challenge_markup = Extra
     m.callbackButton('No, Do Not Delete Challenge',          'delete_a_challenge:back'), // Same as go back
     m.callbackButton('👈🏼 Back',                                 'delete_a_challenge:back')
 ], {columns: 1}));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ------------- THE "MANAGE" COMMAND------------------
 bot.command('manage', (ctx) => {
@@ -224,8 +286,8 @@ simpleRouter.on('main_admin_menu', (ctx) => {
                 homeHelper.choose_challenge_to_delete(ctx)
                 break;
             case "set_challenge_for_week" :
-
-
+                console.log("home.js:288")
+                homeHelper.choose_challenge_for_week(ctx)
                 break;
             default:
                 //Intentionally Blank
@@ -339,45 +401,123 @@ simpleRouter.on('delete_a_challenge', (ctx) => {
     }
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// -------------- ADD VERSES ----------
-flow.command('challenge', (ctx) => {
-    ctx.flow.enter('answer_challenge')
+simpleRouter.on('choose_a_challenge_menu', (ctx) => {
+    if(homeHelper.isAdmin_flow(ctx)){
+        switch(ctx.state.value){ //Either a verse_id or "back"
+            case "back" :
+                homeHelper.choose_challenge_for_week(ctx)
+                break;
+            default:
+                let verse_object_id = ctx.state.value
+                CurrentWeekSettings.update(
+                    { settings : 'challenge' },
+                    {
+                        challenge_of_the_week_id : verse_object_id
+                    },
+                    { upsert : true },
+                    function(error,doc) {
+                        if (error) throw error;
+                        console.log("\n\n\n","home.js:420     ","\n",doc)
+                        ctx.editMessageText("<b>Challenge has been set!</b>    \n\nSelect an option below to continue...",main_admin_menu_markup);
+                    }
+                );
+        }
+    }else{
+        ctx.replyWithHTML("Sorry, this command is not available");
+    }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let public_main_menu_markup = Extra
+.HTML()
+.markup((m) => m.inlineKeyboard([
+    m.callbackButton('💡 Answer Challenge of The Day', 'main_public_menu:answer_challenge'),
+    m.callbackButton('📋 View Your Score', 'main_public_menu:view_own_score'),
+    m.callbackButton('👥 Live Scoreboard', 'main_public_menu:friends_score'),
+    m.callbackButton('👥 Add Friend', 'main_public_menu:add_friend'),
+    m.callbackButton('👥 Remove Friend', 'main_public_menu:friends_score'),
+    // m.callbackButton('✏️ Edit', 'main_admin_menu:update'),
+    // m.callbackButton('🚫 Delete Challenge', 'main_admin_menu:delete'),
+    // m.callbackButton('👊🏼 Set Challenge For The Week', 'main_admin_menu:set_challenge_for_week'),
+], {columns: 1}));
+
+simpleRouter.on('main_public_menu', (ctx) => {
+    if(homeHelper.isAdmin_flow(ctx)){
+        ctx.session.update_a_challenge_markup = update_a_challenge_markup
+        switch(ctx.state.value){
+            case "add_friend" :
+                ctx.flow.enter('public_add_friend')
+                break;
+            case "view_own_score":
+
+                break;
+            case "friends_score":
+
+                break;
+            default:
+                //Intentionally Blank
+        }
+    }else{
+        ctx.replyWithHTML("Sorry, this command is not available");
+    }
+});
+
+// ------------- THE "BEGIN" COMMAND------------------
+bot.command('begin', (ctx) => {
+    ctx.session.public_main_menu_markup = public_main_menu_markup //store it for later use
+    ctx.replyWithHTML("Select an option below to continue...", public_main_menu_markup);
+});
+
+
+
+flow.command('add', (ctx) => { // Adds a friend
+    ctx.flow.enter('super-wizard')
+})
+
+flow.command('remove', (ctx) => { // Adds a friend
+    ctx.flow.enter('super-wizard')
+})
+
+
+
+
+
+
+
 
 
 

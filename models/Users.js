@@ -5,7 +5,8 @@ const {mongoose} = require('../database/db.js');
 const Users = mongoose.model('Users', new mongoose.Schema({
     telegram_id: String,
     username: String,
-    preferred_time: String
+    preferred_time: String,
+    friend_ids: Array
 }));
 
 module.exports = Users;

@@ -313,6 +313,8 @@ flow.register(add_verses_for_weekend);
 
 
 
+
+
 const answer_challenge = new WizardScene('answer_challenge',
     (ctx) => {
         let step_one_message = '🔥 Challenge of the day:\n'
@@ -645,6 +647,62 @@ flow.register(update_answers_thursday)
 
 
 
+// Update Thursday's Answers
+const public_add_friend = new Scene('public_add_friend')
+public_add_friend.enter((ctx) => ctx.editMessageText("What is your friend's Telegram Username?"))
+public_add_friend.on('text', (ctx) => {
+    Users.find({ username: ctx.update.message.text }, function(err, user) {
+        if (err) throw err;
+        console.log(user);
+        if(user.length != 0 ){
+
+        }
+    });
+
+    // Users.update(
+    //     {username: ctx.update.message.text  },
+    //     {$set: { friend_ids : [] }},
+    //     { upsert : true },
+    //     function(error,doc) {
+    //         if (error) throw error;
+    //         console.log("homeHelper:467            Thursday's Answers Successfully Updated!")
+    //     }
+    // );
+    ctx.flow.leave()
+    ctx.replyWithHTML("<b>Friend added!</b>     \n\nSelect an option below to continue...", ctx.session.public_main_menu_markup)
+})
+flow.register(public_add_friend)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -817,6 +875,26 @@ module.exports = {
             ctx.editMessageText('Choose a Challenge To <b>DELETE</b>:', delete_challenges_menu_markup)
         })
     },
+
+    choose_challenge_for_week: (ctx) => {
+        let choose_challenge_buttons = []
+        // Turn all of the challenges into buttons
+        Verses.find({},(err, verses) => {
+            if (err) throw err;
+            // Create the button menu
+            let choose_challenge_menu_markup = Extra
+            .HTML()
+            .markup((m) => {
+                let choose_challenge_menu_buttons = verses.map((verse) => {
+                    return m.callbackButton(verse.challenge_name, 'choose_a_challenge_menu:'+ verse._id)
+                })
+                choose_challenge_menu_buttons.push(m.callbackButton('👈🏼 Back To Main Menu', 'list_all_challenges_menu:back'))
+
+                return m.inlineKeyboard( choose_challenge_menu_buttons , {columns: 2})
+            })
+            ctx.editMessageText('Choose a Challenge To <b>SET</b> for the week:', choose_challenge_menu_markup)
+        })
+    }
 
 
 };
