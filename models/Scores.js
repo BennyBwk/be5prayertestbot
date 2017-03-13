@@ -2,11 +2,11 @@ const bcrypt = require('bcrypt-nodejs');
 const crypto = require('crypto');
 const {mongoose} = require('../database/db.js');
 
-const Users = mongoose.model('Users', new mongoose.Schema({
+const Scores = mongoose.model('Scores', new mongoose.Schema({
     telegram_id: String,
-    username: String,
-    preferred_time: String,
-    friend_ids: Array
+    verse_id: String,
+    score: Number,
+    fullmarks: Number
 }));
 
-module.exports = Users;
+module.exports = Scores ;

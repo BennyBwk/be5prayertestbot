@@ -1,6 +1,7 @@
 const {mongoose} = require('../database/db.js');
 
 const Verses = mongoose.model('Verses', new mongoose.Schema({
+    challenge_name: String,
     topic: String,
     scripture_ref: String,
     full_verse: String,
